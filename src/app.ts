@@ -3,10 +3,10 @@ import express, {
   type Request,
   type Response,
 } from "express";
+import logger from "./middleware/logger.ts";
 // import { userRoute } from "./modules/user/user.route.ts";
 // import { profileRoute } from "./modules/profile/profile.route.ts";
 // import { authRoute } from "./modules/auth/auth.route.ts";
-// import logger from "./middleware/logger.ts";
 // import CookieParser from "cookie-parser";
 // import cors from "cors";
 // import globalErrorHandler from "./middleware/globalErrorHandler.ts";
@@ -21,7 +21,7 @@ app.use(
     extended: true,
   }),
 );
-// app.use(logger);
+app.use(logger);
 // app.use(
 //   cors({
 //     origin: "http:localhost:3000",
