@@ -8,7 +8,7 @@ const createIssue = async (req: Request, res: Response, next: NextFunction): Pro
     const { title, description, type } = req.body;
     
     // We expect the auth middleware to set req.user
-    const reporter_id = (req as any).user.id;
+    const reporter_id = req.user.id;
 
     if (!title || !description || !type) {
       return next({
@@ -89,7 +89,7 @@ const updateIssue = async (req: Request, res: Response, next: NextFunction): Pro
       });
     }
 
-    const user = (req as any).user;
+    const user = req.user;
     
     // Check if issue exists
     const existingIssue = await issueService.getIssueByIdRaw(id);

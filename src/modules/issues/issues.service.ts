@@ -30,7 +30,7 @@ const getAllIssues = async (query: TIssueQuery): Promise<TIssueResponse[]> => {
 
   // 1. Build the dynamic SQL for filtering issues
   let sql = "SELECT * FROM issues WHERE 1=1";
-  const params: any[] = [];
+  const params: (string | number)[] = [];
   let paramIndex = 1;
 
   if (type) {
@@ -113,7 +113,7 @@ const updateIssue = async (id: number, payload: TUpdateIssue): Promise<TIssueRes
   const { title, description, type, status } = payload;
 
   const updates: string[] = [];
-  const params: any[] = [];
+  const params: (string | number)[] = [];
   let paramIndex = 1;
 
   if (title !== undefined) {

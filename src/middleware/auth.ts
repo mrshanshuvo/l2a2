@@ -5,6 +5,18 @@ import { pool } from "../db/index.ts";
 import type { ROLES } from "../types/index.ts";
 import { StatusCodes } from "http-status-codes";
 
+declare global {
+  namespace Express {
+    interface Request {
+      user: {
+        id: number;
+        email: string;
+        role: "contributor" | "maintainer";
+      };
+    }
+  }
+}
+
 const auth = (...roles: ROLES[]) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -53,7 +65,7 @@ const auth = (...roles: ROLES[]) => {
       const user = userData.rows[0];
 
       // 5. Attach user to request
-      (req as any).user = user;
+      req.user = user;
 
       // 6. Role check
       if (roles.length && !roles.includes(user.role)) {

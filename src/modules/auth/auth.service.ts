@@ -84,11 +84,11 @@ const loginUserFromDB = async (payload: TLoginData): Promise<{ token: string; re
   };
 
   const token = jwt.sign(jwtPayload, config.access_secret as string, {
-    expiresIn: (config.access_token_expiration || "1d") as any,
+    expiresIn: (config.access_token_expiration || "1d") as "1d",
   });
   
   const refreshToken = jwt.sign(jwtPayload, config.refresh_secret as string, {
-    expiresIn: (config.refresh_token_expiration || "7d") as any,
+    expiresIn: (config.refresh_token_expiration || "7d") as "7d",
   });
 
   const userData = {
@@ -141,7 +141,7 @@ const generateFreshToken = async (token: string) => {
     };
     
     const accessToken = jwt.sign(jwtPayload, config.access_secret as string, {
-      expiresIn: config.access_token_expiration as any,
+      expiresIn: (config.access_token_expiration || "1d") as "1d",
     });
 
     return { accessToken };
