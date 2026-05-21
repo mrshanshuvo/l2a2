@@ -5,15 +5,6 @@ import { pool } from "../db/index.ts";
 import type { ROLES } from "../types/index.ts";
 import { StatusCodes } from "http-status-codes";
 
-// Extend Express Request to include our user payload
-declare global {
-  namespace Express {
-    interface Request {
-      user: any; // We can type this more strictly later if needed
-    }
-  }
-}
-
 const auth = (...roles: ROLES[]) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -62,7 +53,7 @@ const auth = (...roles: ROLES[]) => {
       const user = userData.rows[0];
 
       // 5. Attach user to request
-      req.user = user;
+      (req as any).user = user;
 
       // 6. Role check
       if (roles.length && !roles.includes(user.role)) {
