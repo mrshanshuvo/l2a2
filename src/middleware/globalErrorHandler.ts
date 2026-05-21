@@ -1,17 +1,16 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import { StatusCodes } from "http-status-codes";
 
-const globalErrorHandler = (
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const statusCode = err.statusCode || 500;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction): void => {
+  let statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
+  let message = err.message || "Internal Server Error";
+  let errors = err.errors || err;
 
   res.status(statusCode).json({
     success: false,
-    message: err.message || "Internal Server Error",
-    error: err,
+    message,
+    errors,
   });
 };
 
