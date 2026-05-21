@@ -50,7 +50,7 @@ const registerUserIntoDB = async (payload: TSignupData): Promise<TUserResponse> 
   return result.rows[0];
 };
 
-const loginUserFromDB = async (payload: TLoginData): Promise<{ token: string; user: TUserResponse }> => {
+const loginUserFromDB = async (payload: TLoginData): Promise<{ token: string; refreshToken: string; user: TUserResponse }> => {
   const { email, password } = payload;
 
   // Fetch user
@@ -86,6 +86,10 @@ const loginUserFromDB = async (payload: TLoginData): Promise<{ token: string; us
   const token = jwt.sign(jwtPayload, config.access_secret as string, {
     expiresIn: (config.access_token_expiration || "1d") as any,
   });
+  
+  const refreshToken = jwt.sign(jwtPayload, config.refresh_secret as string, {
+    expiresIn: (config.refresh_token_expiration || "7d") as any,
+  });
 
   const userData = {
     id: user.id,
@@ -96,22 +100,17 @@ const loginUserFromDB = async (payload: TLoginData): Promise<{ token: string; us
     updated_at: user.updated_at,
   };
 
-  return { token, user: userData };
+  return { token, refreshToken, user: userData };
 };
 
-const generateFreshToken = async (authHeader: string) => {
+const generateFreshToken = async (token: string) => {
   try {
     // 1. Token check
-    if (!authHeader) {
+    if (!token) {
       throw new CustomError(401, "Unauthorized", "No token provided");
     }
 
-    // 2. Extract Bearer token
-    const token = authHeader.startsWith("Bearer ")
-      ? authHeader.split(" ")[1]
-      : authHeader;
-
-    // 3. Verify token
+    // 2. Verify token
     const decoded = jwt.verify(
       token as string,
       config.refresh_secret as string,

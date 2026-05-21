@@ -2,8 +2,9 @@ import type { Request, Response, NextFunction } from "express";
 import { authService } from "./auth.service.ts";
 import sendResponse from "../../utils/sendResponse.ts";
 import { StatusCodes } from "http-status-codes";
+import config from "../../config/index.ts";
 
-const signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { name, email, password, role } = req.body;
 
@@ -41,12 +42,19 @@ const login = async (req: Request, res: Response, next: NextFunction): Promise<v
     }
 
     const result = await authService.loginUserFromDB({ email, password });
+    const { refreshToken, ...responseData } = result;
+
+    res.cookie("refreshToken", refreshToken, {
+      secure: config.node_env === "production",
+      httpOnly: true,
+      sameSite: "strict",
+    });
 
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
       message: "Login successful",
-      data: result,
+      data: responseData,
     });
   } catch (error) {
     next(error);
@@ -55,16 +63,17 @@ const login = async (req: Request, res: Response, next: NextFunction): Promise<v
 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
+    const token = req.cookies.refreshToken;
+    
+    if (!token) {
       return next({
         statusCode: StatusCodes.UNAUTHORIZED,
         message: "Unauthorized access",
-        errors: "No token provided",
+        errors: "No refresh token provided in cookies",
       });
     }
 
-    const result = await authService.generateFreshToken(authHeader);
+    const result = await authService.generateFreshToken(token);
 
     sendResponse(res, {
       statusCode: StatusCodes.OK,
