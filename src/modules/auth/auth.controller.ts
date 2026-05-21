@@ -53,7 +53,32 @@ const login = async (req: Request, res: Response, next: NextFunction): Promise<v
   }
 };
 
+export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return next({
+        statusCode: StatusCodes.UNAUTHORIZED,
+        message: "Unauthorized access",
+        errors: "No token provided",
+      });
+    }
+
+    const result = await authService.generateFreshToken(authHeader);
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Token refreshed successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const authController = {
   signup,
   login,
+  refreshToken,
 };

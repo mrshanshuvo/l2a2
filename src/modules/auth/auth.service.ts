@@ -99,7 +99,61 @@ const loginUserFromDB = async (payload: TLoginData): Promise<{ token: string; us
   return { token, user: userData };
 };
 
+const generateFreshToken = async (authHeader: string) => {
+  try {
+    // 1. Token check
+    if (!authHeader) {
+      throw new CustomError(401, "Unauthorized", "No token provided");
+    }
+
+    // 2. Extract Bearer token
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.split(" ")[1]
+      : authHeader;
+
+    // 3. Verify token
+    const decoded = jwt.verify(
+      token as string,
+      config.refresh_secret as string,
+    ) as jwt.JwtPayload;
+
+    // 4. Check user existence
+    const userData = await pool.query(
+      `
+        SELECT id, name, email, role
+        FROM users
+        WHERE email = $1
+      `,
+      [decoded.email]
+    );
+
+    if (userData.rowCount === 0) {
+      throw new CustomError(404, "User not found", "User not found!");
+    }
+
+    const user = userData.rows[0];
+
+    // 5. Generate the JWT token
+    const jwtPayload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+    
+    const accessToken = jwt.sign(jwtPayload, config.access_secret as string, {
+      expiresIn: config.access_token_expiration as any,
+    });
+
+    return { accessToken };
+  } catch (error) {
+    if (error instanceof CustomError) throw error;
+    throw new CustomError(401, "Unauthorized", "Invalid or expired refresh token");
+  }
+};
+
 export const authService = {
   registerUserIntoDB,
   loginUserFromDB,
+  generateFreshToken,
 };
