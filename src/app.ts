@@ -3,12 +3,12 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 // Route Imports
-import { authRoute } from "./modules/auth/auth.route.ts";
-import { issueRoute } from "./modules/issues/issues.route.ts";
+import { authRoute } from "./modules/auth/auth.route.js";
+import { issueRoute } from "./modules/issues/issues.route.js";
 
 // Middleware Imports
-import logger from "./middleware/logger.ts";
-import globalErrorHandler from "./middleware/globalErrorHandler.ts";
+import logger from "./middleware/logger.js";
+import globalErrorHandler from "./middleware/globalErrorHandler.js";
 
 const app: Application = express();
 

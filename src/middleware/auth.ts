@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import config from "../config/index.ts";
-import { pool } from "../db/index.ts";
-import type { ROLES } from "../types/index.ts";
+import config from "../config/index.js";
+import { pool } from "../db/index.js";
+import type { ROLES } from "../types/index.js";
 import { StatusCodes } from "http-status-codes";
 
 declare global {

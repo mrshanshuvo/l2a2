@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import { issueService } from "./issues.service.ts";
-import sendResponse from "../../utils/sendResponse.ts";
+import { issueService } from "./issues.service.js";
+import sendResponse from "../../utils/sendResponse.js";
 import { StatusCodes } from "http-status-codes";
 
 const createIssue = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

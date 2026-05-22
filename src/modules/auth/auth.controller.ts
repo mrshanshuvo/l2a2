@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import { authService } from "./auth.service.ts";
-import sendResponse from "../../utils/sendResponse.ts";
+import { authService } from "./auth.service.js";
+import sendResponse from "../../utils/sendResponse.js";
 import { StatusCodes } from "http-status-codes";
-import config from "../../config/index.ts";
+import config from "../../config/index.js";
 
 export const signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

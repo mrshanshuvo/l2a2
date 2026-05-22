@@ -1,5 +1,5 @@
-import { pool } from "../../db/index.ts";
-import type { TCreateIssue, TIssueQuery, TIssueResponse, TUpdateIssue } from "./issues.interface.ts";
+import { pool } from "../../db/index.js";
+import type { TCreateIssue, TIssueQuery, TIssueResponse, TUpdateIssue } from "./issues.interface.js";
 
 export class CustomError extends Error {
   statusCode: number;

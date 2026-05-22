@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { pool } from "../../db/index.ts";
-import config from "../../config/index.ts";
-import type { TSignupData, TLoginData, TUserResponse } from "./auth.interface.ts";
+import { pool } from "../../db/index.js";
+import config from "../../config/index.js";
+import type { TSignupData, TLoginData, TUserResponse } from "./auth.interface.js";
 
 export class CustomError extends Error {
   statusCode: number;
