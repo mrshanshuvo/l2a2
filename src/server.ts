@@ -6,7 +6,7 @@ const port = config.port;
 const main = () => {
   initDB();
   app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`DevPulse is running on http://localhost:${port}`);
   });
 };
 

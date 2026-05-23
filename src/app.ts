@@ -32,7 +32,7 @@ app.use(logger);
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     status: "success",
-    message: "Express Server is running",
+    message: "DevPulse is running",
   });
 });
 
